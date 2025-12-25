@@ -31,3 +31,13 @@ build/
 
 ### VS Code ###
 .vscode/
+
+.env
+.env.*
+
+# Spring Boot config
+application.properties
+application.yml
+application-*.properties
+application-*.yml
+

@@ -3,12 +3,14 @@ package com.example.shoecommerce.controller;
 import com.shoecommerce.dto.response.ApiResponse;
 import com.shoecommerce.entity.Order;
 import com.shoecommerce.entity.User;
+import com.shoecommerce.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/orders")
@@ -16,13 +18,13 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class OrderController {
 
-    // This is a simplified version - you'll need to implement OrderService
+    private final OrderService orderService;
 
     @GetMapping("/user")
     public ResponseEntity<ApiResponse<List<Order>>> getUserOrders(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        // TODO: Implement get user orders logic
-        return ResponseEntity.ok(ApiResponse.success("Orders retrieved", null));
+        List<Order> orders = orderService.getUserOrders(user);
+        return ResponseEntity.ok(ApiResponse.success("Orders retrieved", orders));
     }
 
     @GetMapping("/{id}")
@@ -30,29 +32,56 @@ public class OrderController {
             @PathVariable Long id,
             Authentication authentication
     ) {
-        User user = (User) authentication.getPrincipal();
-        // TODO: Implement get order by id logic
-        return ResponseEntity.ok(ApiResponse.success("Order found", null));
+        try {
+            User user = (User) authentication.getPrincipal();
+            Order order = orderService.getOrderById(id, user);
+            return ResponseEntity.ok(ApiResponse.success("Order found", order));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        }
     }
 
     @PostMapping
     public ResponseEntity<ApiResponse<Order>> createOrder(
-            @RequestBody Object request,
+            @RequestBody Map<String, String> request,
             Authentication authentication
     ) {
-        User user = (User) authentication.getPrincipal();
-        // TODO: Implement create order logic
-        return ResponseEntity.ok(ApiResponse.success("Order created", null));
+        try {
+            User user = (User) authentication.getPrincipal();
+            String shippingAddress = request.get("shippingAddress");
+            String paymentMethod = request.get("paymentMethod");
+            
+            Order order = orderService.createOrder(user, shippingAddress, paymentMethod);
+            return ResponseEntity.ok(ApiResponse.success("Order created", order));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        }
     }
 
     @PutMapping("/{id}/status")
     public ResponseEntity<ApiResponse<Order>> updateOrderStatus(
             @PathVariable Long id,
-            @RequestBody Object request,
+            @RequestBody Map<String, String> request,
             Authentication authentication
     ) {
+        try {
+            User user = (User) authentication.getPrincipal();
+            Order.OrderStatus status = Order.OrderStatus.valueOf(request.get("status"));
+            
+            Order order = orderService.updateOrderStatus(id, user, status);
+            return ResponseEntity.ok(ApiResponse.success("Order status updated", order));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/seller")
+    public ResponseEntity<ApiResponse<List<Order>>> getSellerOrders(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        // TODO: Implement update order status logic
-        return ResponseEntity.ok(ApiResponse.success("Order status updated", null));
+        List<Order> orders = orderService.getSellerOrders(user);
+        return ResponseEntity.ok(ApiResponse.success("Seller orders retrieved", orders));
     }
 }

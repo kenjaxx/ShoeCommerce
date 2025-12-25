@@ -35,7 +35,14 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PaymentStatus paymentStatus;
+
+    @Column(nullable = false)
     private String shippingAddress;
+
+    @Column(nullable = false)
     private String paymentMethod;
 
     @Column(name = "created_at")
@@ -48,9 +55,6 @@ public class Order {
     protected void onCreate() {
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
-        if (status == null) {
-            status = OrderStatus.PENDING;
-        }
     }
 
     @PreUpdate
@@ -59,6 +63,18 @@ public class Order {
     }
 
     public enum OrderStatus {
-        PENDING, CONFIRMED, PROCESSING, SHIPPED, DELIVERED, CANCELLED, REFUNDED
+        PENDING,
+        CONFIRMED,
+        PROCESSING,
+        SHIPPED,
+        DELIVERED,
+        CANCELLED
+    }
+
+    public enum PaymentStatus {
+        PENDING,
+        COMPLETED,
+        FAILED,
+        REFUNDED
     }
 }

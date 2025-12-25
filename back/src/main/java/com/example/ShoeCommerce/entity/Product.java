@@ -28,14 +28,13 @@ public class Product {
     @Column(nullable = false)
     private BigDecimal price;
 
+    @Column(nullable = false)
     private Integer stock;
 
     private String category;
     private String brand;
     private String size;
     private String color;
-
-    @Column(name = "image_url")
     private String imageUrl;
 
     @ManyToOne
