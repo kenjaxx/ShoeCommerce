@@ -1,0 +1,34 @@
+[
+    {
+        "id": 1,
+        "name": "Running Shoes",
+        "brand": "Nike",
+        "price": 120.00,
+        "stock": 50,
+        "imageUrl": "/placeholder-shoe.jpg"
+    },
+    {
+        "id": 2,
+        "name": "Basketball Shoes",
+        "brand": "Adidas",
+        "price": 150.00,
+        "stock": 30,
+        "imageUrl": "/placeholder-shoe.jpg"
+    },
+    {
+        "id": 3,
+        "name": "Casual Sneakers",
+        "brand": "Puma",
+        "price": 80.00,
+        "stock": 100,
+        "imageUrl": "/placeholder-shoe.jpg"
+    },
+    {
+        "id": 4,
+        "name": "Formal Shoes",
+        "brand": "Clarks",
+        "price": 200.00,
+        "stock": 20,
+        "imageUrl": "/placeholder-shoe.jpg"
+    }
+]

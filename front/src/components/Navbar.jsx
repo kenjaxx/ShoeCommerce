@@ -41,33 +41,16 @@ function Navbar() {
               Products
             </a>
             {user?.role === 'SELLER' && (
-              <a href="/seller/dashboard" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
-                Dashboard
+              <a href="/admin" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+                Admin
               </a>
             )}
-            <a href="#" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
-              Categories
-            </a>
-            <a href="#" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
-              Contact
-            </a>
           </nav>
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <>
-                {user.role === 'BUYER' && (
-                  <a href="/cart" className="relative p-2 text-gray-700 hover:text-primary-600 transition-colors">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
-                    <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      0
-                    </span>
-                  </a>
-                )}
-                
                 <div className="relative">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -91,47 +74,13 @@ function Navbar() {
                         onClick={() => setIsDropdownOpen(false)}
                       ></div>
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-20">
-                        <a
-                          href="/profile"
-                          className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                        >
-                          My Profile
-                        </a>
-                        {user.role === 'BUYER' && (
-                          <>
-                            <a
-                              href="/orders"
-                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            >
-                              My Orders
-                            </a>
-                            <a
-                              href="/cart"
-                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            >
-                              Shopping Cart
-                            </a>
-                          </>
-                        )}
                         {user.role === 'SELLER' && (
                           <>
                             <a
-                              href="/seller/dashboard"
+                              href="/admin"
                               className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                             >
-                              Dashboard
-                            </a>
-                            <a
-                              href="/seller/products"
-                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            >
-                              My Products
-                            </a>
-                            <a
-                              href="/seller/orders"
-                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            >
-                              Orders
+                              Admin
                             </a>
                           </>
                         )}
@@ -154,12 +103,6 @@ function Navbar() {
                   className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
                 >
                   Login
-                </a>
-                <a
-                  href="/register"
-                  className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
-                >
-                  Sign Up
                 </a>
               </>
             )}
@@ -191,40 +134,18 @@ function Navbar() {
                 Products
               </a>
               {user?.role === 'SELLER' && (
-                <a href="/seller/dashboard" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                  Dashboard
+                <a href="/admin/products" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
+                  Admin
                 </a>
               )}
-              <a href="#" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                Categories
-              </a>
-              <a href="#" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                Contact
-              </a>
               
               {user ? (
                 <>
                   <hr className="my-2" />
-                  <a href="/profile" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                    My Profile
-                  </a>
-                  {user.role === 'BUYER' && (
-                    <>
-                      <a href="/orders" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                        My Orders
-                      </a>
-                      <a href="/cart" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                        Shopping Cart
-                      </a>
-                    </>
-                  )}
                   {user.role === 'SELLER' && (
                     <>
-                      <a href="/seller/products" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                        My Products
-                      </a>
-                      <a href="/seller/orders" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                        Orders
+                       <a href="/admin/products" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
+                        Admin
                       </a>
                     </>
                   )}
@@ -240,9 +161,6 @@ function Navbar() {
                   <hr className="my-2" />
                   <a href="/login" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
                     Login
-                  </a>
-                  <a href="/register" className="px-4 py-2 bg-primary-600 text-white hover:bg-primary-700 rounded mx-4">
-                    Sign Up
                   </a>
                 </>
               )}

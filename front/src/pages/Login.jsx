@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { authService } from '../services';
 import { setStorageItem } from '../utils';
 import { STORAGE_KEYS } from '../constants';
 
 function Login() {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   });
   const [error, setError] = useState('');
@@ -24,20 +23,25 @@ function Login() {
     setLoading(true);
 
     try {
-      const response = await authService.login(formData);
-      
-      // Store auth data
-      setStorageItem(STORAGE_KEYS.AUTH_TOKEN, response.token);
-      setStorageItem(STORAGE_KEYS.USER_DATA, JSON.stringify(response.user));
-      
-      // Redirect based on user role
-      if (response.user.role === 'SELLER') {
-        window.location.href = '/seller/dashboard';
+      const response = await fetch('http://localhost:8080/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setStorageItem(STORAGE_KEYS.AUTH_TOKEN, data.token);
+        setStorageItem(STORAGE_KEYS.USER_DATA, JSON.stringify(data.user));
+        window.location.href = '/admin';
       } else {
-        window.location.href = '/';
+        setError(data.message || 'Login failed. Please try again.');
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      setError('Login failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -48,14 +52,8 @@ function Login() {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            Admin Sign In
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <a href="/register" className="font-medium text-primary-600 hover:text-primary-500">
-              create a new account
-            </a>
-          </p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
@@ -67,19 +65,19 @@ function Login() {
           
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
+              <label htmlFor="username" className="sr-only">
+                Username
               </label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
+                id="username"
+                name="username"
+                type="text"
+                autoComplete="username"
                 required
-                value={formData.email}
+                value={formData.username}
                 onChange={handleChange}
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
+                placeholder="Username"
               />
             </div>
             <div>
@@ -97,26 +95,6 @@ function Login() {
                 className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
               />
-            </div>
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="/forgot-password" className="font-medium text-primary-600 hover:text-primary-500">
-                Forgot your password?
-              </a>
             </div>
           </div>
 
