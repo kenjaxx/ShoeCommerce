@@ -1,4 +1,4 @@
-package com.shoecommerce.config;
+package com.example.shoecommerce.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

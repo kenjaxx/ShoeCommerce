@@ -1,4 +1,4 @@
-package com.example.ShoeCommerce.config;
+package com.example.shoecommerce.config;
 
 public class JwtConfig {
     

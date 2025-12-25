@@ -1,4 +1,4 @@
-package com.shoecommerce.util;
+package com.example.shoecommerce.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

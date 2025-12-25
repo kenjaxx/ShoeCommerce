@@ -1,4 +1,4 @@
-package com.shoecommerce.service;
+package com.example.shoecommerce.service;
 
 import com.shoecommerce.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -2,6 +2,7 @@ package com.shoecommerce.controller;
 
 import com.shoecommerce.dto.response.ApiResponse;
 import com.shoecommerce.entity.User;
+import com.shoecommerce.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*")
 public class UserController {
+
+    private final UserService userService;
 
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<User>> getProfile(Authentication authentication) {
@@ -26,21 +29,16 @@ public class UserController {
             @RequestBody User updatedUser,
             Authentication authentication
     ) {
-        User user = (User) authentication.getPrincipal();
-        
-        // Update allowed fields
-        if (updatedUser.getName() != null) {
-            user.setName(updatedUser.getName());
+        try {
+            User currentUser = (User) authentication.getPrincipal();
+            User savedUser = userService.updateProfile(currentUser, updatedUser);
+            
+            // Remove password before sending
+            savedUser.setPassword(null);
+            return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", savedUser));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.error(e.getMessage()));
         }
-        if (updatedUser.getPhone() != null) {
-            user.setPhone(updatedUser.getPhone());
-        }
-        if (updatedUser.getAddress() != null) {
-            user.setAddress(updatedUser.getAddress());
-        }
-        
-        // In a real app, save to database here
-        user.setPassword(null);
-        return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", user));
     }
 }

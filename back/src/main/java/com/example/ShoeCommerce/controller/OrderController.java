@@ -1,4 +1,4 @@
-package com.shoecommerce.controller;
+package com.example.shoecommerce.controller;
 
 import com.shoecommerce.dto.response.ApiResponse;
 import com.shoecommerce.entity.Order;

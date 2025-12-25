@@ -1,4 +1,4 @@
-package com.example.ShoeCommerce.service;
+package com.example.shoecommerce.service;
 
 public class CartService {
     

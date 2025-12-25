@@ -1,4 +1,4 @@
-package com.shoecommerce.dto.request;
+package com.example.shoecommerce.dto.request;
 
 import com.shoecommerce.entity.User;
 import jakarta.validation.constraints.Email;

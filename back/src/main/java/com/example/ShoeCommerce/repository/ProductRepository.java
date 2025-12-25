@@ -1,4 +1,4 @@
-package com.shoecommerce.repository;
+package com.example.shoecommerce.repository;
 
 import com.shoecommerce.entity.Product;
 import com.shoecommerce.entity.User;

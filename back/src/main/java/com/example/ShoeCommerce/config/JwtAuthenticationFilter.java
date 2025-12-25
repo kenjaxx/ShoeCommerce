@@ -1,4 +1,4 @@
-package com.shoecommerce.security;
+package com.example.shoecommerce.config;
 
 import com.shoecommerce.util.JwtUtil;
 import jakarta.servlet.FilterChain;

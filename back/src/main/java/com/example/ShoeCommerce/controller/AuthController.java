@@ -1,4 +1,4 @@
-package com.shoecommerce.controller;
+package com.example.shoecommerce.controller;
 
 import com.shoecommerce.dto.request.LoginRequest;
 import com.shoecommerce.dto.request.RegisterRequest;

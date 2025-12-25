@@ -1,4 +1,4 @@
-package com.example.ShoeCommerce.dto.response;
+package com.example.shoecommerce.dto.response;
 
 public class ProductResponse {
     

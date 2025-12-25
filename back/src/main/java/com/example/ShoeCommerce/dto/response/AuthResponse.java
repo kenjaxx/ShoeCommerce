@@ -1,4 +1,4 @@
-package com.shoecommerce.dto.response;
+package com.example.shoecommerce.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

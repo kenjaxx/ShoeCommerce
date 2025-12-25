@@ -1,4 +1,4 @@
-package com.shoecommerce.entity;
+package com.example.shoecommerce.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

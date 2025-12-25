@@ -1,4 +1,4 @@
-package com.shoecommerce.service;
+package com.example.shoecommerce.service;
 
 import com.shoecommerce.dto.request.ProductRequest;
 import com.shoecommerce.entity.Product;

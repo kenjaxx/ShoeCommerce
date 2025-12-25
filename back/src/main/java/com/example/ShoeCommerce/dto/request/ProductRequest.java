@@ -1,4 +1,4 @@
-package com.shoecommerce.dto.request;
+package com.example.shoecommerce.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
