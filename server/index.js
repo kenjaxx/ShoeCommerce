@@ -11,8 +11,20 @@ app.use(cors());
 
 const port = process.env.PORT || 8080;
 
+// ADD THIS - Check if env variables are loaded
+console.log('Environment variables loaded:');
+console.log('ADMIN_USERNAME:', process.env.ADMIN_USERNAME);
+console.log('ADMIN_PASSWORD:', process.env.ADMIN_PASSWORD);
+console.log('JWT_SECRET exists:', !!process.env.JWT_SECRET);
+
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
+
+    console.log('Login attempt:');
+    console.log('Received username:', username);
+    console.log('Received password:', password);
+    console.log('Expected username:', process.env.ADMIN_USERNAME);
+    console.log('Expected password:', process.env.ADMIN_PASSWORD);
 
     const adminUsername = process.env.ADMIN_USERNAME;
     const adminPassword = process.env.ADMIN_PASSWORD;
@@ -31,6 +43,7 @@ app.post('/api/login', (req, res) => {
             user
         });
     } else {
+        console.log('Authentication failed!');
         res.status(401).json({
             success: false,
             message: 'Invalid credentials'
