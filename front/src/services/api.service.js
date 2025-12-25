@@ -148,21 +148,20 @@ export const del = async (url, config = {}) => {
 };
 
 /**
- * Upload file(s)
+ * Upload file
  */
-export const upload = async (url, formData, onUploadProgress = null) => {
+export const uploadFile = async (url, file, onUploadProgress) => {
   try {
-    const config = {
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    const response = await apiClient.post(url, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    };
+      onUploadProgress,
+    });
     
-    if (onUploadProgress) {
-      config.onUploadProgress = onUploadProgress;
-    }
-    
-    const response = await apiClient.post(url, formData, config);
     return response.data;
   } catch (error) {
     throw error;

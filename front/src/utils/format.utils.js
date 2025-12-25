@@ -1,72 +1,111 @@
+/**
+ * Format Utilities
+ * Helper functions for formatting data
+ */
 
-export const formatCurrency = (amount, currency = 'PHP') => {
-  // Use appropriate locale based on currency
-  const localeMap = {
-    'PHP': 'en-PH',
-    'USD': 'en-US',
-    'EUR': 'en-EU',
-  };
-  
-  const locale = localeMap[currency] || 'en-PH';
-  
-  return new Intl.NumberFormat(locale, {
+/**
+ * Format number as Philippine Peso currency
+ * @param {number} amount - Amount to format
+ * @returns {string} - Formatted currency string
+ */
+export const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('en-PH', {
     style: 'currency',
-    currency: currency,
+    currency: 'PHP',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
   }).format(amount);
 };
 
+/**
+ * Format number with thousand separators
+ * @param {number} number - Number to format
+ * @returns {string} - Formatted number string
+ */
+export const formatNumber = (number) => {
+  return new Intl.NumberFormat('en-PH').format(number);
+};
 
-export const formatDate = (date, format = 'medium') => {
+/**
+ * Format date to readable string
+ * @param {string|Date} date - Date to format
+ * @param {string} format - Format type ('short', 'long', 'full')
+ * @returns {string} - Formatted date string
+ */
+export const formatDate = (date, format = 'short') => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
   
   const options = {
-    short: { year: 'numeric', month: 'numeric', day: 'numeric' },
-    medium: { year: 'numeric', month: 'short', day: 'numeric' },
-    long: { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' },
+    short: { year: 'numeric', month: 'short', day: 'numeric' },
+    long: { year: 'numeric', month: 'long', day: 'numeric' },
+    full: { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    }
   };
   
-  return new Intl.DateTimeFormat('en-US', options[format]).format(dateObj);
+  return new Intl.DateTimeFormat('en-PH', options[format]).format(dateObj);
 };
 
 /**
- * Format date and time
+ * Format date to relative time (e.g., "2 hours ago")
+ * @param {string|Date} date - Date to format
+ * @returns {string} - Relative time string
  */
-export const formatDateTime = (date) => {
+export const formatRelativeTime = (date) => {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const now = new Date();
+  const diffInSeconds = Math.floor((now - dateObj) / 1000);
   
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(dateObj);
+  const intervals = {
+    year: 31536000,
+    month: 2592000,
+    week: 604800,
+    day: 86400,
+    hour: 3600,
+    minute: 60,
+    second: 1
+  };
+  
+  for (const [unit, seconds] of Object.entries(intervals)) {
+    const interval = Math.floor(diffInSeconds / seconds);
+    
+    if (interval >= 1) {
+      return `${interval} ${unit}${interval > 1 ? 's' : ''} ago`;
+    }
+  }
+  
+  return 'just now';
 };
 
 /**
- * Format phone number
+ * Format phone number to Philippine format
+ * @param {string} phone - Phone number to format
+ * @returns {string} - Formatted phone number
  */
 export const formatPhoneNumber = (phone) => {
   const cleaned = phone.replace(/\D/g, '');
-  const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
   
-  if (match) {
-    return `(${match[1]}) ${match[2]}-${match[3]}`;
+  // Format as: 0912 345 6789
+  if (cleaned.length === 11 && cleaned.startsWith('0')) {
+    return `${cleaned.slice(0, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7)}`;
+  }
+  
+  // Format as: +63 912 345 6789
+  if (cleaned.length === 12 && cleaned.startsWith('63')) {
+    return `+${cleaned.slice(0, 2)} ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8)}`;
   }
   
   return phone;
 };
 
 /**
- * Truncate text with ellipsis
- */
-export const truncateText = (text, maxLength) => {
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength) + '...';
-};
-
-/**
- * Format file size
+ * Format file size to human-readable string
+ * @param {number} bytes - File size in bytes
+ * @returns {string} - Formatted file size
  */
 export const formatFileSize = (bytes) => {
   if (bytes === 0) return '0 Bytes';
@@ -75,23 +114,28 @@ export const formatFileSize = (bytes) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   
-  return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 };
 
 /**
- * Capitalize first letter
+ * Truncate text to specified length
+ * @param {string} text - Text to truncate
+ * @param {number} maxLength - Maximum length
+ * @param {string} suffix - Suffix to add (default: '...')
+ * @returns {string} - Truncated text
  */
-export const capitalizeFirst = (text) => {
-  if (!text) return '';
-  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+export const truncateText = (text, maxLength, suffix = '...') => {
+  if (text.length <= maxLength) return text;
+  return text.substring(0, maxLength - suffix.length) + suffix;
 };
 
 /**
- * Convert to title case
+ * Format name to title case
+ * @param {string} name - Name to format
+ * @returns {string} - Title cased name
  */
-export const toTitleCase = (text) => {
-  if (!text) return '';
-  return text
+export const formatName = (name) => {
+  return name
     .toLowerCase()
     .split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -99,32 +143,67 @@ export const toTitleCase = (text) => {
 };
 
 /**
- * Format order status for display
+ * Format order ID
+ * @param {number|string} id - Order ID
+ * @returns {string} - Formatted order ID
  */
-export const formatOrderStatus = (status) => {
-  const statusMap = {
-    PENDING: 'Pending',
-    CONFIRMED: 'Confirmed',
-    PROCESSING: 'Processing',
-    SHIPPED: 'Shipped',
-    DELIVERED: 'Delivered',
-    CANCELLED: 'Cancelled',
-    REFUNDED: 'Refunded',
-  };
-  
-  return statusMap[status] || status;
+export const formatOrderId = (id) => {
+  const year = new Date().getFullYear();
+  return `ORD-${year}-${String(id).padStart(6, '0')}`;
 };
 
 /**
- * Generate initials from name
+ * Format credit card number with masking
+ * @param {string} cardNumber - Card number to format
+ * @param {boolean} mask - Whether to mask digits
+ * @returns {string} - Formatted card number
  */
-export const getInitials = (name) => {
-  if (!name) return '';
+export const formatCardNumber = (cardNumber, mask = true) => {
+  const cleaned = cardNumber.replace(/\s/g, '');
   
-  const parts = name.trim().split(' ');
-  if (parts.length === 1) {
-    return parts[0].charAt(0).toUpperCase();
+  if (mask && cleaned.length === 16) {
+    return `**** **** **** ${cleaned.slice(-4)}`;
   }
   
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  return cleaned.match(/.{1,4}/g)?.join(' ') || cleaned;
+};
+
+/**
+ * Format percentage
+ * @param {number} value - Value to format as percentage
+ * @param {number} decimals - Number of decimal places
+ * @returns {string} - Formatted percentage
+ */
+export const formatPercentage = (value, decimals = 0) => {
+  return `${value.toFixed(decimals)}%`;
+};
+
+/**
+ * Format address
+ * @param {object} address - Address object
+ * @returns {string} - Formatted address
+ */
+export const formatAddress = (address) => {
+  const parts = [
+    address.address,
+    address.city,
+    address.province,
+    address.postalCode
+  ].filter(Boolean);
+  
+  return parts.join(', ');
+};
+
+/**
+ * Slugify text
+ * @param {string} text - Text to slugify
+ * @returns {string} - Slugified text
+ */
+export const slugify = (text) => {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 };

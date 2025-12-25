@@ -5,31 +5,20 @@
 
 import { get, post, put, del } from './api.service.js';
 import { API_ENDPOINTS } from '../constants';
-import { buildQueryString } from '../utils';
 
 /**
- * Get all products with pagination and filters
+ * Get all products with filters and pagination
  */
 export const getProducts = async (params = {}) => {
-  const queryString = buildQueryString(params);
-  const url = queryString ? `${API_ENDPOINTS.PRODUCTS.BASE}?${queryString}` : API_ENDPOINTS.PRODUCTS.BASE;
-  return await get(url);
+  const queryString = new URLSearchParams(params).toString();
+  return await get(`${API_ENDPOINTS.PRODUCTS.BASE}${queryString ? '?' + queryString : ''}`);
 };
 
 /**
- * Get single product by ID
+ * Get product by ID
  */
 export const getProductById = async (id) => {
   return await get(API_ENDPOINTS.PRODUCTS.BY_ID(id));
-};
-
-/**
- * Search products
- */
-export const searchProducts = async (query, filters = {}) => {
-  const params = { q: query, ...filters };
-  const queryString = buildQueryString(params);
-  return await get(`${API_ENDPOINTS.PRODUCTS.SEARCH}?${queryString}`);
 };
 
 /**
@@ -42,30 +31,40 @@ export const getCategories = async () => {
 /**
  * Get products by category
  */
-export const getProductsByCategory = async (categoryId, params = {}) => {
-  const queryString = buildQueryString(params);
-  const url = queryString 
-    ? `${API_ENDPOINTS.PRODUCTS.BY_CATEGORY(categoryId)}?${queryString}` 
-    : API_ENDPOINTS.PRODUCTS.BY_CATEGORY(categoryId);
-  return await get(url);
+export const getProductsByCategory = async (categoryId) => {
+  return await get(API_ENDPOINTS.PRODUCTS.BY_CATEGORY(categoryId));
 };
 
 /**
- * Create new product (Seller only)
+ * Search products
+ */
+export const searchProducts = async (query) => {
+  return await get(`${API_ENDPOINTS.PRODUCTS.SEARCH}?q=${encodeURIComponent(query)}`);
+};
+
+/**
+ * Get featured products
+ */
+export const getFeaturedProducts = async () => {
+  return await get(`${API_ENDPOINTS.PRODUCTS.BASE}?featured=true&limit=8`);
+};
+
+/**
+ * Create new product (Seller)
  */
 export const createProduct = async (productData) => {
   return await post(API_ENDPOINTS.SELLER.ADD_PRODUCT, productData);
 };
 
 /**
- * Update product (Seller only)
+ * Update product (Seller)
  */
 export const updateProduct = async (id, productData) => {
   return await put(API_ENDPOINTS.SELLER.UPDATE_PRODUCT(id), productData);
 };
 
 /**
- * Delete product (Seller only)
+ * Delete product (Seller)
  */
 export const deleteProduct = async (id) => {
   return await del(API_ENDPOINTS.SELLER.DELETE_PRODUCT(id));
@@ -74,10 +73,6 @@ export const deleteProduct = async (id) => {
 /**
  * Get seller's products
  */
-export const getSellerProducts = async (params = {}) => {
-  const queryString = buildQueryString(params);
-  const url = queryString 
-    ? `${API_ENDPOINTS.SELLER.PRODUCTS}?${queryString}` 
-    : API_ENDPOINTS.SELLER.PRODUCTS;
-  return await get(url);
+export const getSellerProducts = async () => {
+  return await get(API_ENDPOINTS.SELLER.PRODUCTS);
 };

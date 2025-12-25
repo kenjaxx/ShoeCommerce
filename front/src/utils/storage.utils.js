@@ -1,113 +1,93 @@
 /**
  * Storage Utilities
- * Functions for managing local storage operations safely
+ * Helper functions for localStorage operations
  */
 
 /**
- * Save data to local storage
- */
-export const setStorageItem = (key, value) => {
-  try {
-    const serializedValue = JSON.stringify(value);
-    localStorage.setItem(key, serializedValue);
-    return true;
-  } catch (error) {
-    console.error(`Error saving to localStorage: ${error}`);
-    return false;
-  }
-};
-
-/**
- * Get data from local storage
+ * Get item from localStorage
+ * @param {string} key - Storage key
+ * @returns {string|null} - Stored value or null
  */
 export const getStorageItem = (key) => {
   try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : null;
+    return localStorage.getItem(key);
   } catch (error) {
-    console.error(`Error reading from localStorage: ${error}`);
+    console.error('Error getting storage item:', error);
     return null;
   }
 };
 
 /**
- * Remove item from local storage
+ * Set item in localStorage
+ * @param {string} key - Storage key
+ * @param {string} value - Value to store
+ */
+export const setStorageItem = (key, value) => {
+  try {
+    localStorage.setItem(key, value);
+  } catch (error) {
+    console.error('Error setting storage item:', error);
+  }
+};
+
+/**
+ * Remove item from localStorage
+ * @param {string} key - Storage key
  */
 export const removeStorageItem = (key) => {
   try {
     localStorage.removeItem(key);
-    return true;
   } catch (error) {
-    console.error(`Error removing from localStorage: ${error}`);
-    return false;
+    console.error('Error removing storage item:', error);
   }
 };
 
 /**
- * Clear all items from local storage
+ * Clear all items from localStorage
  */
 export const clearStorage = () => {
   try {
     localStorage.clear();
-    return true;
   } catch (error) {
-    console.error(`Error clearing localStorage: ${error}`);
-    return false;
+    console.error('Error clearing storage:', error);
   }
 };
 
 /**
- * Check if local storage is available
+ * Get item from sessionStorage
+ * @param {string} key - Storage key
+ * @returns {string|null} - Stored value or null
  */
-export const isStorageAvailable = () => {
+export const getSessionItem = (key) => {
   try {
-    const testKey = '__storage_test__';
-    localStorage.setItem(testKey, 'test');
-    localStorage.removeItem(testKey);
-    return true;
+    return sessionStorage.getItem(key);
   } catch (error) {
-    return false;
-  }
-};
-
-/**
- * Save data with expiration time
- */
-export const setStorageItemWithExpiry = (key, value, expirationMinutes) => {
-  try {
-    const now = new Date();
-    const item = {
-      value: value,
-      expiry: now.getTime() + expirationMinutes * 60 * 1000,
-    };
-    localStorage.setItem(key, JSON.stringify(item));
-    return true;
-  } catch (error) {
-    console.error(`Error saving to localStorage with expiry: ${error}`);
-    return false;
-  }
-};
-
-/**
- * Get data with expiration check
- */
-export const getStorageItemWithExpiry = (key) => {
-  try {
-    const itemStr = localStorage.getItem(key);
-    if (!itemStr) return null;
-
-    const item = JSON.parse(itemStr);
-    const now = new Date();
-
-    // Check if expired
-    if (now.getTime() > item.expiry) {
-      localStorage.removeItem(key);
-      return null;
-    }
-
-    return item.value;
-  } catch (error) {
-    console.error(`Error reading from localStorage with expiry: ${error}`);
+    console.error('Error getting session item:', error);
     return null;
+  }
+};
+
+/**
+ * Set item in sessionStorage
+ * @param {string} key - Storage key
+ * @param {string} value - Value to store
+ */
+export const setSessionItem = (key, value) => {
+  try {
+    sessionStorage.setItem(key, value);
+  } catch (error) {
+    console.error('Error setting session item:', error);
+  }
+};
+
+/**
+ * Remove item from sessionStorage
+ * @param {string} key - Storage key
+ */
+export const removeSessionItem = (key) => {
+  try {
+    sessionStorage.removeItem(key);
+  } catch (error) {
+    console.error('Error removing session item:', error);
   }
 };
