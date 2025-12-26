@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import productsData from '../data/products.json';
 
 function Admin() {
   const [products, setProducts] = useState([]);
@@ -19,13 +18,13 @@ function Admin() {
   const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
-    // Load from localStorage if available, otherwise use products.json
+    // Load from localStorage if available, otherwise initialize with empty array
     const savedProducts = localStorage.getItem('shoeProducts');
     if (savedProducts) {
       setProducts(JSON.parse(savedProducts));
     } else {
-      setProducts(productsData);
-      localStorage.setItem('shoeProducts', JSON.stringify(productsData));
+      setProducts([]); // Initialize with empty array if no data in localStorage
+      localStorage.setItem('shoeProducts', JSON.stringify([]));
     }
   }, []);
 

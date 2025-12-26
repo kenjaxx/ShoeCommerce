@@ -2,30 +2,37 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 // Components
 import Layout from './components/Layout';
-import ProtectedRoute from './components/ProtectedRoute';
 
-// Pages - Public
-import Login from './pages/Login';
+// Pages
+import AdminLogin from './pages/AdminLogin'; // Import the new AdminLogin component
 import ProductList from './pages/Products/ProductList';
 import Admin from './pages/Admin';
+
+// A simple client-side ProtectedRoute
+const ProtectedRoute = ({ children }) => {
+  const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn');
+  if (!isAdminLoggedIn) {
+    return <Navigate to="/admin-login" replace />;
+  }
+  return children;
+};
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
-        
+        {/* Admin Login Route (outside layout) */}
+        <Route path="/admin-login" element={<AdminLogin />} />
+
         {/* Routes with Layout */}
         <Route element={<Layout />}>
-          {/* Public */}
           <Route path="/" element={<ProductList />} />
           
-          {/* Protected Seller Routes */}
+          {/* Protected Admin Route */}
           <Route
             path="/admin"
             element={
-              <ProtectedRoute requiredRole="SELLER">
+              <ProtectedRoute>
                 <Admin />
               </ProtectedRoute>
             }

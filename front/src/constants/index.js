@@ -5,4 +5,3 @@
 
 export * from './api.config.js';
 export * from './app.constants.js';
-export * from './routes.constants.js';

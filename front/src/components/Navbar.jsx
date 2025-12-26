@@ -1,25 +1,19 @@
 import { useState, useEffect } from 'react';
-import { getStorageItem, removeStorageItem } from '../utils';
-import { STORAGE_KEYS } from '../constants';
+import { useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Load user from localStorage
-    const userData = getStorageItem(STORAGE_KEYS.USER_DATA);
-    if (userData) {
-      setUser(JSON.parse(userData));
-    }
+    setIsAdminLoggedIn(localStorage.getItem('isAdminLoggedIn') === 'true');
   }, []);
 
   const handleLogout = () => {
-    removeStorageItem(STORAGE_KEYS.AUTH_TOKEN);
-    removeStorageItem(STORAGE_KEYS.REFRESH_TOKEN);
-    removeStorageItem(STORAGE_KEYS.USER_DATA);
-    window.location.href = '/';
+    localStorage.removeItem('isAdminLoggedIn');
+    setIsAdminLoggedIn(false);
+    navigate('/');
   };
 
   return (
@@ -37,76 +31,18 @@ function Navbar() {
             <a href="/" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
               Home
             </a>
-            <a href="/products" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
-              Products
+            <a href="/admin" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
+              Admin
             </a>
-            {user?.role === 'SELLER' && (
-              <a href="/admin" className="text-gray-700 hover:text-primary-600 transition-colors font-medium">
-                Admin
-              </a>
+            {isAdminLoggedIn && (
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 text-red-600 hover:bg-gray-100 rounded-lg font-medium transition-colors"
+              >
+                Logout
+              </button>
             )}
           </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            {user ? (
-              <>
-                <div className="relative">
-                  <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 text-gray-700 hover:text-primary-600 transition-colors"
-                  >
-                    <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
-                      <span className="text-primary-600 font-semibold">
-                        {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
-                      </span>
-                    </div>
-                    <span className="font-medium">{user.firstName}</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-
-                  {isDropdownOpen && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={() => setIsDropdownOpen(false)}
-                      ></div>
-                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-20">
-                        {user.role === 'SELLER' && (
-                          <>
-                            <a
-                              href="/admin"
-                              className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                            >
-                              Admin
-                            </a>
-                          </>
-                        )}
-                        <hr className="my-2" />
-                        <button
-                          onClick={handleLogout}
-                          className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100"
-                        >
-                          Logout
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              </>
-            ) : (
-              <>
-                <a
-                  href="/login"
-                  className="px-4 py-2 text-gray-700 hover:text-primary-600 font-medium transition-colors"
-                >
-                  Login
-                </a>
-              </>
-            )}
-          </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -130,39 +66,16 @@ function Navbar() {
               <a href="/" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
                 Home
               </a>
-              <a href="/products" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                Products
+              <a href="/admin" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
+                Admin
               </a>
-              {user?.role === 'SELLER' && (
-                <a href="/admin/products" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                  Admin
-                </a>
-              )}
-              
-              {user ? (
-                <>
-                  <hr className="my-2" />
-                  {user.role === 'SELLER' && (
-                    <>
-                       <a href="/admin/products" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                        Admin
-                      </a>
-                    </>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="text-left px-4 py-2 text-red-600 hover:bg-gray-100 rounded"
-                  >
-                    Logout
-                  </button>
-                </>
-              ) : (
-                <>
-                  <hr className="my-2" />
-                  <a href="/login" className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded">
-                    Login
-                  </a>
-                </>
+              {isAdminLoggedIn && (
+                <button
+                  onClick={handleLogout}
+                  className="text-left px-4 py-2 text-red-600 hover:bg-gray-100 rounded"
+                >
+                  Logout
+                </button>
               )}
             </nav>
           </div>

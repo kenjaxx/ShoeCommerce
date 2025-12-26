@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react';
-import productsData from '../../data/products.json';
 
 function ProductList() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setProducts(productsData);
+    // Load from localStorage if available, otherwise initialize with empty array
+    const savedProducts = localStorage.getItem('shoeProducts');
+    if (savedProducts) {
+      setProducts(JSON.parse(savedProducts));
+    } else {
+      setProducts([]); // Initialize with empty array if no data in localStorage
+      localStorage.setItem('shoeProducts', JSON.stringify([]));
+    }
     setLoading(false);
   }, []);
 
@@ -38,41 +44,81 @@ function ProductList() {
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {products.map((product) => (
-                    <div
-                      key={product.id}
-                      className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
-                    >
-                      <div className="aspect-square bg-gray-100">
-                        <img
-                          src={product.imageUrl || '/placeholder-shoe.jpg'}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="p-4">
-                        <h3 className="font-semibold text-gray-900 mb-1 truncate">
-                          {product.name}
-                        </h3>
-                        <p className="text-sm text-gray-500 mb-2 truncate">
-                          {product.brand}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-primary-600">
-                            ₱{product.price.toLocaleString()}
-                          </span>
+                  {products.map((product) => {
+                    const discount = product.originalPrice
+                      ? Math.round(
+                          ((product.originalPrice - product.price) /
+                            product.originalPrice) *
+                            100
+                        )
+                      : 0;
+
+                    return (
+                      <div
+                        key={product.id}
+                        className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all group"
+                      >
+                        {/* Product Image */}
+                        <div className="relative aspect-square bg-gray-100 overflow-hidden">
+                          <img
+                            src={product.imageUrl || '/placeholder-shoe.jpg'}
+                            alt={product.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                            onError={(e) => {
+                              e.target.src = '/placeholder-shoe.jpg';
+                            }}
+                          />
+
+                          {/* Discount Badge */}
+                          {discount > 0 && (
+                            <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold shadow-lg">
+                              -{discount}%
+                            </div>
+                          )}
+
+                          {/* Stock Badge */}
+                          {product.stock === 0 && (
+                            <div className="absolute top-3 left-3 bg-gray-900 text-white px-3 py-1 rounded-full text-sm font-bold">
+                              Out of Stock
+                            </div>
+                          )}
                         </div>
-                        {product.stock < 10 && product.stock > 0 && (
-                          <p className="text-xs text-orange-600 mt-2">
-                            Only {product.stock} left in stock
+
+                        {/* Product Info */}
+                        <div className="p-5">
+                          <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                            {product.brand}
                           </p>
-                        )}
-                        {product.stock === 0 && (
-                          <p className="text-xs text-red-600 mt-2">Out of stock</p>
-                        )}
+                          <h3 className="font-bold text-gray-900 text-lg mb-2 line-clamp-2">
+                            {product.name}
+                          </h3>
+
+                          {/* Stock Level */}
+                          {product.stock > 0 && product.stock < 10 && (
+                            <div className="flex items-center gap-2 mb-3">
+                              <span className="text-xs bg-orange-100 text-orange-600 px-2 py-1 rounded-full">
+                                Only {product.stock} left
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Pricing */}
+                          <div className="mb-4">
+                            <div className="flex items-baseline gap-2">
+                              <span className="text-2xl font-bold text-blue-600">
+                                ₱{product.price.toLocaleString()}
+                              </span>
+                              {product.originalPrice && (
+                                <span className="text-sm text-gray-400 line-through">
+                                  ₱{product.originalPrice.toLocaleString()}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </>
             )}
